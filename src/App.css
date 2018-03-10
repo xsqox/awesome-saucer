@@ -19,18 +19,6 @@ body {
     visibility: hidden;
 }
 
-.red {
-    color: red;
-}
-
-.green {
-    color: green;
-}
-
-.yellow {
-    color: yellow;
-}
-
 .thimble-container {
     text-align: center;
     height: 100%;
@@ -50,9 +38,13 @@ body {
     text-transform: uppercase;
 }
 
+.timble {
+    width: 180px;
+}
+
 .thimble-handle {
     position: relative;
-    margin-top: 45px;
+    margin: 45px auto 0;
     width: 170px;
     height: 80px;
 }
@@ -170,13 +162,29 @@ body {
 }
 
 @keyframes odd_flash {
-    from { background-color: mediumvioletred; width: 7px; height: 7px; }
-    to { background-color: red; width: 12px; height: 12px; }
+    from {
+        background-color: mediumvioletred;
+        width: 7px;
+        height: 7px;
+    }
+    to {
+        background-color: red;
+        width: 12px;
+        height: 12px;
+    }
 }
 
 @keyframes even_flash {
-    from { background-color: red; width: 12px; height: 12px; }
-    to { background-color: mediumvioletred; width: 7px; height: 7px; }
+    from {
+        background-color: red;
+        width: 12px;
+        height: 12px;
+    }
+    to {
+        background-color: mediumvioletred;
+        width: 7px;
+        height: 7px;
+    }
 }
 
 ul {
