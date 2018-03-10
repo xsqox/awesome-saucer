@@ -19,7 +19,7 @@ class List extends Component {
 
     render() {
         return (<ul>
-            <FlipMove duration={350} easing="ease-out">
+            <FlipMove duration={150} easing="ease-out">
                 {this.props.items.map((item) => {
                     return this.generateItem(item)
                 })}
@@ -31,6 +31,7 @@ class List extends Component {
 
 class Thimble extends Component {
     render() {
+        const resultClass = "result " + (this.props.item.opened ? " " : "hidden ") + (this.props.item.win ? "won" : "");
         return <div className="thimble">
             <div className={"thimble-handle " + this.props.item.class}
                  onClick={() => this.props.onClick(this.props.item.id)}>
@@ -45,7 +46,7 @@ class Thimble extends Component {
                 </div>
             </div>
             <div className="timble-result"><p
-                className={"result " + (this.props.item.opened ? "" : "hidden")}>{this.props.item.win ? "You win!" : "Nope!"}</p>
+                className={resultClass}>{this.props.item.message}</p>
             </div>
         </div>
     }
@@ -60,36 +61,54 @@ class App extends Component {
         this.shuffleThimbles = this.shuffleThimbles.bind(this);
         this.initThimbles = this.initThimbles.bind(this);
         this.setRandom = this.setRandom.bind(this);
+        this.deepClone = this.deepClone.bind(this);
+        this.pickAnswer = this.pickAnswer.bind(this);
+        this.showAnswer = this.showAnswer.bind(this);
+        this.answers = {
+            win: ['You won (a trip to Pluto)!', 'Be my Valentine!', 'Will you marry me?', 'Warp One Engage!', 'Beam you up!'],
+            lose: ['Nope', 'Loser!', 'Keep trying', 'No luck, buddy', 'Don\'t ever play lottery', 'Embarrassing', 'Lol']
+        };
         this.state = {
             thimbles: this.initThimbles()
         }
+    }
+
+    pickAnswer(key) {
+        const options = this.answers[key];
+        return options[Math.floor(Math.random() * options.length)];
+    }
+
+    showAnswer(key) {
+        return this.pickAnswer(key);
     }
 
     initThimbles() {
         let thimbles = [
             {
                 win: false,
-                id: 1, class: 'red',
-                opened: false
+                id: 1,
+                opened: false,
             }, {
                 win: false,
                 id: 2,
-                class: "green",
                 opened: false
             }, {
                 win: false,
-                id: 3, class: "blue",
+                id: 3,
                 opened: false
             }
         ];
-        return this.setRandom(thimbles)
+        thimbles = this.setRandom(thimbles);
+        thimbles.forEach((value, index) => {
+            value.message = this.showAnswer(value.win ? 'win' : 'lose');
+        });
+        return thimbles;
     }
 
     setRandom(options) {
         const randomWinIndex = Math.floor(Math.random() * options.length);
         options.forEach((value, index) => {
             value.opened = false;
-            value.clicked = false;
             if (index === randomWinIndex) {
                 value.win = true
             } else {
@@ -101,17 +120,25 @@ class App extends Component {
 
     shuffleHard() {
         var i = 0;
-        for (i = 0; i < 100; i++) {
+        for (i = 0; i < 250; i++) {
             setTimeout(() => this.shuffle(), 500)
         }
     }
 
     shuffle() {
-        let options = this.state.thimbles.slice();
+        let options = this.deepClone(this.state.thimbles.slice());
         options = this.shuffleThimbles(this.setRandom(options));
+        options.forEach((value, index) => {
+           value.opened = false;
+           value.message = this.showAnswer(value.win ? "win" : "lose");
+        });
         this.setState({
             thimbles: options
         });
+    }
+
+    deepClone(input) {
+        return JSON.parse(JSON.stringify(input));
     }
 
     shuffleThimbles(a) {
@@ -123,7 +150,7 @@ class App extends Component {
     }
 
     onThimbleClick(id) {
-        let options = this.state.thimbles.slice();
+        let options = this.deepClone(this.state.thimbles.slice());
         options.forEach((item) => {
             if (item.id === id) {
                 item.opened = true;
@@ -138,7 +165,9 @@ class App extends Component {
         return (
             <div className="thimble-container">
                 <h1>Pick a saucer, try your luck!</h1>
-                <List items={this.state.thimbles} onClick={this.onThimbleClick}/>
+                <List items={this.state.thimbles} onClick={this.onThimbleClick} ref={(list) => {
+                    this.thimbleList = list
+                }}/>
                 <Button class="btn-circle" text="Engage shuffle!" onClick={this.shuffleHard} ref={(button) => {
                     this.shuffleButton = button;
                 }}/>

@@ -42,6 +42,12 @@ body {
 
 .thimble-result {
     height: 20px;
+    text-align: center;
+}
+
+.result.won {
+    color: goldenrod;
+    text-transform: uppercase;
 }
 
 .thimble-handle {
@@ -153,7 +159,6 @@ body {
     border-radius: 50%;
     align-content: center;
     background: mediumvioletred;
-    /*animation: color_change 1s infinite alternate;*/
 }
 
 .flash.odd {
