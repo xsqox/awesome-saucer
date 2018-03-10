@@ -2,26 +2,65 @@ import React, {Component} from 'react';
 import './App.css';
 import FlipMove from 'react-flip-move';
 
+class Beam extends Component {
+    render() {
+        return <div ref={(beam) => {this.beam = beam}} className={this.props.class}></div>
+    }
+}
+Beam.defaultProps = {
+    class: 'beam hidden'
+}
+
 class Button extends Component {
     render() {
-        return <button className={this.props.class} onClick={this.props.onClick}>{this.props.text}</button>
+        return <button ref={(button) => {this.button = button}} className={this.props.class} onClick={this.props.onClick}>{this.props.text}</button>
     }
+
+    prompt() {
+        this.button.classList.add('prompting');
+        setTimeout(() => {this.button.classList.remove('prompting')}, 2000);
+    }
+}
+Button.defaultProps = {
+    class: 'btn-circle',
+    text: 'Press me'
+};
+
+class Textspan extends Component {
+
+    render() {
+        return(
+            <div className={"textspan " + this.props.className}><p>{this.props.message}</p>
+            </div>
+        )
+    }
+
 }
 
 class List extends Component {
 
-    generateItem(item) {
+    generateItem(item, index) {
+        console.log(index);
+        let beamDirection = 'center';
+        if (index === 0) {
+            beamDirection = 'right';
+        } else if (index===3) {
+            beamDirection = 'left';
+        } else {
+            beamDirection = 'center'
+        }
         return (
             <li key={item.id}>
                 <Thimble key={item.id} item={item} onClick={this.props.onClick}/>
+                <Beam className={beamDirection + " " + this.props.beamVisibility }  />
             </li>)
     }
 
     render() {
         return (<ul>
             <FlipMove duration={150} easing="ease-out">
-                {this.props.items.map((item) => {
-                    return this.generateItem(item)
+                {this.props.items.map((item, index) => {
+                    return this.generateItem(item, index)
                 })}
             </FlipMove>
         </ul>)
@@ -31,7 +70,6 @@ class List extends Component {
 
 class Thimble extends Component {
     render() {
-        const resultClass = "result " + (this.props.item.opened ? " " : "hidden ") + (this.props.item.win ? "won" : "");
         return <div className="thimble">
             <div className={"thimble-handle " + this.props.item.class}
                  onClick={() => this.props.onClick(this.props.item.id)}>
@@ -44,9 +82,6 @@ class Thimble extends Component {
                     <span className="flash even"></span>
                     <span className="flash odd"></span>
                 </div>
-            </div>
-            <div className="timble-result"><p
-                className={resultClass}>{this.props.item.message}</p>
             </div>
         </div>
     }
@@ -65,11 +100,12 @@ class App extends Component {
         this.pickAnswer = this.pickAnswer.bind(this);
         this.showAnswer = this.showAnswer.bind(this);
         this.answers = {
-            win: ['You won (a trip to Pluto)!', 'Be my Valentine!', 'Will you marry me?', 'Warp One Engage!', 'Beam you up!'],
-            lose: ['Nope', 'Loser!', 'Keep trying', 'No luck, buddy', 'Don\'t ever play lottery', 'Embarrassing', 'Lol']
+            win: ['You won (a trip to Pluto)!', 'Be my Valentine!', 'Will you marry me?', 'Warp One Engage!', 'Beam you up!', 'Come with me, into the ship', 'You found serenity!', 'Universe is yours'],
+            lose: ['Nope', 'Loser!', 'No space trips for ya', 'Keep trying', 'You are pathetic', 'No luck, buddy', 'Don\'t ever play roulette', 'Embarrassing', 'Lol', 'Crawling is your thing', 'You poor worm...']
         };
         this.state = {
-            thimbles: this.initThimbles()
+            thimbles: this.initThimbles(),
+            playedID: null
         }
     }
 
@@ -133,7 +169,8 @@ class App extends Component {
            value.message = this.showAnswer(value.win ? "win" : "lose");
         });
         this.setState({
-            thimbles: options
+            thimbles: options,
+            playedID: null
         });
     }
 
@@ -150,24 +187,39 @@ class App extends Component {
     }
 
     onThimbleClick(id) {
-        let options = this.deepClone(this.state.thimbles.slice());
-        options.forEach((item) => {
-            if (item.id === id) {
-                item.opened = true;
-            }
-        });
-        this.setState({
-            thimbles: options
-        });
+        if (!this.state.playedID) {
+            let options = this.deepClone(this.state.thimbles.slice());
+            options.forEach((item) => {
+                if (item.id === id) {
+                    item.opened = true;
+                }
+            });
+            this.setState({
+                thimbles: options,
+                playedID: id
+            });
+        } else {
+            this.shuffleButton.prompt();
+        }
+    }
+
+    guessedRight(playedID) {
+        return this.state.thimbles.find((value, index) => {
+            return value.id === playedID;
+        }).win;
     }
 
     render() {
+        const resultClass = (!this.state.playedID ? "hidden " : (this.guessedRight(this.state.playedID) ? "success " : "fail"));
+        const message = (!this.state.playedID) ? "" : (this.guessedRight(this.state.playedID)) ? this.showAnswer('win') : this.showAnswer('lose');
+        const beamVisibility = (!this.state.playedID || !this.guessedRight(this.state.playedID))? "hidden " : "";
         return (
             <div className="thimble-container">
                 <h1>Pick a saucer, try your luck!</h1>
-                <List items={this.state.thimbles} onClick={this.onThimbleClick} ref={(list) => {
+                <List items={this.state.thimbles} onClick={this.onThimbleClick} beamVisibility={beamVisibility} ref={(list) => {
                     this.thimbleList = list
                 }}/>
+                <Textspan className={resultClass} message={message} />
                 <Button class="btn-circle" text="Engage shuffle!" onClick={this.shuffleHard} ref={(button) => {
                     this.shuffleButton = button;
                 }}/>

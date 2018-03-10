@@ -9,14 +9,11 @@ body {
     background-size: cover;
     color: white;
     font-family: 'Mina', sans-serif;
+    position: relative;
 }
 
 #root {
     height: 100%;
-}
-
-.hidden {
-    visibility: hidden;
 }
 
 .thimble-container {
@@ -28,18 +25,65 @@ body {
     align-content: stretch;
 }
 
-.thimble-result {
-    height: 20px;
+.textspan {
+    text-align: center;
+    width: 280px;
+    height: 220px;
+    display: inline-block;
+    margin: 0 auto;
+    transition: all 0.5s ease-in;
+    justify-content: center;
+}
+
+.textarea.hidden {
+    height: 0;
+    width: 0;
+}
+
+.textspan p {
+    font-size: 20px;
+    margin: 0;
     text-align: center;
 }
 
-.result.won {
-    color: goldenrod;
+.fail {
+    background: url('fail-alien.jpg') no-repeat bottom center;
+    background-size: 45%;
+}
+
+.success {
+    color: black;
     text-transform: uppercase;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.success p {
+    display: inline;
+    vertical-align: bottom;
+    align-self: flex-end;
 }
 
 .timble {
     width: 180px;
+}
+
+.beam {
+    display: inline-block;
+    width: 90px;
+    height: 100%;
+    transition: all 0.7s ease-out;
+    transform: perspective(200px) rotateX(40deg);
+    background: yellow;
+    position: absolute;
+}
+
+.beam.hidden {
+    position: absolute;
+    z-index: -1;
+    height: 0;
 }
 
 .thimble-handle {
@@ -191,7 +235,7 @@ ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    height: 250px;
+    height: 150px;
 }
 
 ul li {
@@ -214,4 +258,20 @@ ul li {
     display: inline-block;
     margin: 0 auto;
     width: 220px;
+}
+
+.prompting {
+    animation: shake 150ms 0.75s 3 linear forwards;
+}
+
+@keyframes shake {
+    0% {
+        transform: translate(5px, 0);
+    }
+    50% {
+        transform: translate(-5px, 0);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
 }
