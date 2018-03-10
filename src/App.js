@@ -100,8 +100,8 @@ class App extends Component {
         this.pickAnswer = this.pickAnswer.bind(this);
         this.showAnswer = this.showAnswer.bind(this);
         this.answers = {
-            win: ['You won (a trip to Pluto)!', 'Be my Valentine!', 'Will you marry me?', 'Warp One Engage!', 'Beam you up!', 'Come with me, into the ship', 'You found serenity!', 'Universe is yours'],
-            lose: ['Nope', 'Loser!', 'No space trips for ya', 'Keep trying', 'You are pathetic', 'No luck, buddy', 'Don\'t ever play roulette', 'Embarrassing', 'Lol', 'Crawling is your thing', 'You poor worm...']
+            win: ['You won (a trip)!', 'Be my Valentine!', 'Will you marry me?', 'Warp One Engage!', 'Beam you up!', 'Come with me, into the ship', 'You found serenity!', 'Universe is yours', 'Fly over, fly over!', 'Permission to come on board!', 'Up we go!', 'Now you one of us'],
+            lose: ['Nope', 'Loser!', 'No space trips for ya', 'Keep trying', 'You are pathetic', 'No luck, buddy', 'Don\'t ever play roulette', 'This is embarrassing', 'Lol', 'Crawling is your thing', 'You poor worm...', 'You are the worst', 'Haha!', 'Earthworm', 'Just one more time', 'Just go...', 'Are you done already?', 'You not gonna make it', 'Access denied', 'We don\'t need you', 'Boring', 'Lam\'oh']
         };
         this.state = {
             thimbles: this.initThimbles(),
@@ -215,7 +215,7 @@ class App extends Component {
         const beamVisibility = (!this.state.playedID || !this.guessedRight(this.state.playedID))? "hidden " : "";
         return (
             <div className="thimble-container">
-                <h1>Pick a saucer, try your luck!</h1>
+                <h1>Pick a saucer, win a trip!</h1>
                 <List items={this.state.thimbles} onClick={this.onThimbleClick} beamVisibility={beamVisibility} ref={(list) => {
                     this.thimbleList = list
                 }}/>
