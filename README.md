@@ -1,4 +1,6 @@
-Saucer-themed thimber game
+ # Flying saucer time-killer casual game #
 
-- npm install
-- npm start
+
+`npm install`
+
+`npm start`
