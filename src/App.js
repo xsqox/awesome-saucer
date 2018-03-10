@@ -36,7 +36,13 @@ class Thimble extends Component {
                  onClick={() => this.props.onClick(this.props.item.id)}>
                 <div className="saucer-head"></div>
                 <div className="saucer-body"></div>
-                <div className="saucer-windows"></div>
+                <div className="saucer-windows">
+                    <span className="flash odd"></span>
+                    <span className="flash even"></span>
+                    <span className="flash odd"></span>
+                    <span className="flash even"></span>
+                    <span className="flash odd"></span>
+                </div>
             </div>
             <div className="timble-result"><p
                 className={"result " + (this.props.item.opened ? "" : "hidden")}>{this.props.item.win ? "You win!" : "Nope!"}</p>

@@ -8,6 +8,7 @@ body {
     background-image: url('space_bg.jpg');
     background-size: cover;
     color: white;
+    font-family: 'Mina', sans-serif;
 }
 
 #root {
@@ -131,6 +132,10 @@ body {
 
 .saucer-windows {
     position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
     top: 15px;
     width: 170px;
     height: 15px;
@@ -140,6 +145,33 @@ body {
     right: 0;
     margin: auto;
     z-index: 10;
+}
+
+.flash {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    align-content: center;
+    background: mediumvioletred;
+    /*animation: color_change 1s infinite alternate;*/
+}
+
+.flash.odd {
+    animation: odd_flash 0.5s infinite alternate;
+}
+
+.flash.even {
+    animation: even_flash 0.5s infinite alternate;
+}
+
+@keyframes odd_flash {
+    from { background-color: mediumvioletred; width: 7px; height: 7px; }
+    to { background-color: red; width: 12px; height: 12px; }
+}
+
+@keyframes even_flash {
+    from { background-color: red; width: 12px; height: 12px; }
+    to { background-color: mediumvioletred; width: 7px; height: 7px; }
 }
 
 ul {
