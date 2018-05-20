@@ -1,100 +1,19 @@
 import React, {Component} from 'react';
 import './App.css';
-import FlipMove from 'react-flip-move';
+import DynamicList from './List/List';
+import SaucerShip from './Saucer/saucer';
+import Message from './Message/message';
+import Button from './Button/button';
 
-class Beam extends Component {
-    render() {
-        return <div ref={(beam) => {this.beam = beam}} className={this.props.class}></div>
-    }
-}
-Beam.defaultProps = {
-    class: 'beam hidden'
-}
-
-class Button extends Component {
-    render() {
-        return <button ref={(button) => {this.button = button}} className={this.props.class} onClick={this.props.onClick}>{this.props.text}</button>
-    }
-
-    prompt() {
-        this.button.classList.add('prompting');
-        setTimeout(() => {this.button.classList.remove('prompting')}, 2000);
-    }
-}
-Button.defaultProps = {
-    class: 'btn-circle',
-    text: 'Press me'
-};
-
-class Textspan extends Component {
-
-    render() {
-        return(
-            <div className={"textspan " + this.props.className}><p>{this.props.message}</p>
-            </div>
-        )
-    }
-
-}
-
-class List extends Component {
-
-    generateItem(item, index) {
-        console.log(index);
-        let beamDirection = 'center';
-        if (index === 0) {
-            beamDirection = 'right';
-        } else if (index===3) {
-            beamDirection = 'left';
-        } else {
-            beamDirection = 'center'
-        }
-        return (
-            <li key={item.id}>
-                <Thimble key={item.id} item={item} onClick={this.props.onClick}/>
-                <Beam className={beamDirection + " " + this.props.beamVisibility }  />
-            </li>)
-    }
-
-    render() {
-        return (<ul>
-            <FlipMove duration={150} easing="ease-out">
-                {this.props.items.map((item, index) => {
-                    return this.generateItem(item, index)
-                })}
-            </FlipMove>
-        </ul>)
-    }
-}
-
-
-class Thimble extends Component {
-    render() {
-        return <div className="thimble">
-            <div className={"thimble-handle " + this.props.item.class}
-                 onClick={() => this.props.onClick(this.props.item.id)}>
-                <div className="saucer-head"></div>
-                <div className="saucer-body"></div>
-                <div className="saucer-windows">
-                    <span className="flash odd"></span>
-                    <span className="flash even"></span>
-                    <span className="flash odd"></span>
-                    <span className="flash even"></span>
-                    <span className="flash odd"></span>
-                </div>
-            </div>
-        </div>
-    }
-}
-
-class App extends Component {
+export default class App extends Component {
     constructor() {
         super();
         this.shuffle = this.shuffle.bind(this);
         this.shuffleHard = this.shuffleHard.bind(this);
-        this.onThimbleClick = this.onThimbleClick.bind(this);
-        this.shuffleThimbles = this.shuffleThimbles.bind(this);
-        this.initThimbles = this.initThimbles.bind(this);
+        this.onSaucerClick = this.onSaucerClick.bind(this);
+        this.shuffleSaucers = this.shuffleSaucers.bind(this);
+        this.initSaucers = this.initSaucers.bind(this);
+        this.renderSaucer = this.renderSaucer.bind(this);
         this.setRandom = this.setRandom.bind(this);
         this.deepClone = this.deepClone.bind(this);
         this.pickAnswer = this.pickAnswer.bind(this);
@@ -104,7 +23,7 @@ class App extends Component {
             lose: ['Nope', 'Loser!', 'No space trips for ya', 'Keep trying', 'You are pathetic', 'No luck, buddy', 'Don\'t ever play roulette', 'This is embarrassing', 'Lol', 'Crawling is your thing', 'You poor worm...', 'You are the worst', 'Haha!', 'Earthworm', 'Just one more time', 'Just go...', 'Are you done already?', 'You not gonna make it', 'Access denied', 'We don\'t need you', 'Boring', 'Lam\'oh']
         };
         this.state = {
-            thimbles: this.initThimbles(),
+            saucers: this.initSaucers(),
             playedID: null
         }
     }
@@ -118,8 +37,12 @@ class App extends Component {
         return this.pickAnswer(key);
     }
 
-    initThimbles() {
-        let thimbles = [
+    renderSaucer(item, onClick) {
+        return <SaucerShip saucer={item} onClick={onClick}/>;
+    }
+
+    initSaucers() {
+        let saucers = [
             {
                 win: false,
                 id: 1,
@@ -134,11 +57,11 @@ class App extends Component {
                 opened: false
             }
         ];
-        thimbles = this.setRandom(thimbles);
-        thimbles.forEach((value, index) => {
+        saucers = this.setRandom(saucers);
+        saucers.forEach((value, index) => {
             value.message = this.showAnswer(value.win ? 'win' : 'lose');
         });
-        return thimbles;
+        return saucers;
     }
 
     setRandom(options) {
@@ -156,20 +79,20 @@ class App extends Component {
 
     shuffleHard() {
         var i = 0;
-        for (i = 0; i < 250; i++) {
+        for (i = 0; i < 99; i++) {
             setTimeout(() => this.shuffle(), 500)
         }
     }
 
     shuffle() {
-        let options = this.deepClone(this.state.thimbles.slice());
-        options = this.shuffleThimbles(this.setRandom(options));
+        let options = this.deepClone(this.state.saucers.slice());
+        options = this.shuffleSaucers(this.setRandom(options));
         options.forEach((value, index) => {
            value.opened = false;
            value.message = this.showAnswer(value.win ? "win" : "lose");
         });
         this.setState({
-            thimbles: options,
+            saucers: options,
             playedID: null
         });
     }
@@ -178,7 +101,7 @@ class App extends Component {
         return JSON.parse(JSON.stringify(input));
     }
 
-    shuffleThimbles(a) {
+    shuffleSaucers(a) {
         for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [a[i], a[j]] = [a[j], a[i]];
@@ -186,16 +109,16 @@ class App extends Component {
         return a;
     }
 
-    onThimbleClick(id) {
+    onSaucerClick(id) {
         if (!this.state.playedID) {
-            let options = this.deepClone(this.state.thimbles.slice());
+            let options = this.deepClone(this.state.saucers.slice());
             options.forEach((item) => {
                 if (item.id === id) {
                     item.opened = true;
                 }
             });
             this.setState({
-                thimbles: options,
+                saucers: options,
                 playedID: id
             });
         } else {
@@ -204,7 +127,7 @@ class App extends Component {
     }
 
     guessedRight(playedID) {
-        return this.state.thimbles.find((value, index) => {
+        return this.state.saucers.find((value, index) => {
             return value.id === playedID;
         }).win;
     }
@@ -212,20 +135,17 @@ class App extends Component {
     render() {
         const resultClass = (!this.state.playedID ? "hidden " : (this.guessedRight(this.state.playedID) ? "success " : "fail"));
         const message = (!this.state.playedID) ? "" : (this.guessedRight(this.state.playedID)) ? this.showAnswer('win') : this.showAnswer('lose');
-        const beamVisibility = (!this.state.playedID || !this.guessedRight(this.state.playedID))? "hidden " : "";
         return (
-            <div className="thimble-container">
+            <div className="saucer-container">
                 <h1>Pick a saucer, win a trip!</h1>
-                <List items={this.state.thimbles} onClick={this.onThimbleClick} beamVisibility={beamVisibility} ref={(list) => {
-                    this.thimbleList = list
+                <DynamicList itemRenderer={this.renderSaucer} items={this.state.saucers} onClick={this.onSaucerClick} ref={(list) => {
+                    this.saucerList = list
                 }}/>
-                <Textspan className={resultClass} message={message} />
+                <Message className={resultClass} message={message} />
                 <Button class="btn-circle" text="Engage shuffle!" onClick={this.shuffleHard} ref={(button) => {
                     this.shuffleButton = button;
                 }}/>
             </div>
         );
     }
-}
-
-export default App;
+};
