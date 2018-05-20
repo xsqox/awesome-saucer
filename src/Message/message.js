@@ -4,7 +4,7 @@ import img from '../fail-alien.jpg';
 
 const TextSpan = styled.p`
     width: 280px;
-    height: 220px;
+    height: 180px;
     display: inline-block;
     margin: 0 auto;
     transition: all 0.5s ease-in;
@@ -15,10 +15,10 @@ const TextSpan = styled.p`
         visibility: hidden;
     }
     
-    &.fail {
-        background: url(${img}) no-repeat bottom center;
-        background-size: 45%;
-    }
+    // &.fail {
+    //     background: url(${img}) no-repeat bottom center;
+    //     background-size: 35%;
+    // }
     
     &.success {
         color: goldenrod;
