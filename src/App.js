@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import DynamicList from './List/List';
 import SaucerShip from './Saucer/saucer';
+import BeamSaucer from './BeamSaucer/beam.saucer';
 import Message from './Message/message';
 import './App.css';
 
@@ -23,6 +24,7 @@ export default class App extends Component {
             ],
             playedID: null,
             winID: this.setRandom(3),
+            progress: 0
         };
         this.answers = {
             win: ['You won (a trip)!', 'Be my Valentine!', 'Will you marry me?', 'Warp One Engage!', 'Beam you up!', 'Come with me, into the ship', 'You found serenity!', 'Universe is yours', 'Fly over, fly over!', 'Permission to come on board!', 'Up we go!', 'Now you one of us'],
@@ -38,12 +40,12 @@ export default class App extends Component {
     }
 
     render() {
-        const resultClass = (!this.state.playedID ? "hidden " : (this.guessedRight(this.state.playedID) ? "success " : "fail"));
-        const message = (!this.state.playedID) ? "" : (this.guessedRight(this.state.playedID)) ? this.pickAnswer('win') : this.pickAnswer('lose');
+        const resultClass = (!this.state.playedID ? "hidden " : (this.guessedRight(this.state.playedID, this.state.winID) ? "success " : "fail"));
+        const message = (!this.state.playedID) ? "" : (this.guessedRight(this.state.playedID, this.state.winID)) ? this.pickAnswer('win') : this.pickAnswer('lose');
         return (
             <div className="saucer-container">
                 <h1>Pick a saucer, win a trip!</h1>
-                <SaucerShip scale="1.7" background="lime" onClick={null}/>
+                <BeamSaucer scale="1.7" background="magenta" onClick={null} progress={this.state.progress}/>
                 <DynamicList itemRenderer={this.renderSaucer} items={this.state.saucers} onClick={this.onSaucerClick} />
                 <Message className={resultClass} message={message} />
             </div>
@@ -85,10 +87,19 @@ export default class App extends Component {
     onSaucerClick(id) {
         if (!this.state.playedID) {
             this.setState({
-                playedID: id
+                playedID: id,
+                progress: this.updateProgress(id, this.state.winID)
             });
         } else {
             this.shuffleHard();
+        }
+    }
+
+    updateProgress(played, win) {
+        if (this.guessedRight(played, win)) {
+            return this.state.progress < 10 ? this.state.progress + 1 : this.state.progress;
+        } else {
+            return this.state.progress > 0 ? this.state.progress - 1 : this.state.progress;
         }
     }
 
@@ -97,7 +108,8 @@ export default class App extends Component {
         return options[Math.floor(Math.random() * options.length)];
     }
 
-    guessedRight(playedID) {
-        return playedID === this.state.winID;
+    guessedRight(playedID, winID) {
+        const played = this.state.saucers.find((saucer) => saucer.id === playedID);
+        return this.state.saucers.indexOf(played) === winID;
     }
 };
