@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import './App.css';
 import DynamicList from './List/List';
 import SaucerShip from './Saucer/saucer';
 import Message from './Message/message';
-import Button from './Button/button';
+
+import './App.css';
 
 export default class App extends Component {
     constructor() {
@@ -15,9 +15,7 @@ export default class App extends Component {
         this.initSaucers = this.initSaucers.bind(this);
         this.renderSaucer = this.renderSaucer.bind(this);
         this.setRandom = this.setRandom.bind(this);
-        this.deepClone = this.deepClone.bind(this);
         this.pickAnswer = this.pickAnswer.bind(this);
-        this.showAnswer = this.showAnswer.bind(this);
         this.answers = {
             win: ['You won (a trip)!', 'Be my Valentine!', 'Will you marry me?', 'Warp One Engage!', 'Beam you up!', 'Come with me, into the ship', 'You found serenity!', 'Universe is yours', 'Fly over, fly over!', 'Permission to come on board!', 'Up we go!', 'Now you one of us'],
             lose: ['Nope', 'Loser!', 'No space trips for ya', 'Keep trying', 'You are pathetic', 'No luck, buddy', 'Don\'t ever play roulette', 'This is embarrassing', 'Lol', 'Crawling is your thing', 'You poor worm...', 'You are the worst', 'Haha!', 'Earthworm', 'Just one more time', 'Just go...', 'Are you done already?', 'You not gonna make it', 'Access denied', 'We don\'t need you', 'Boring', 'Lam\'oh']
@@ -28,13 +26,20 @@ export default class App extends Component {
         }
     }
 
-    pickAnswer(key) {
-        const options = this.answers[key];
-        return options[Math.floor(Math.random() * options.length)];
+    componentDidMount() {
+        this.shuffleHard();
     }
 
-    showAnswer(key) {
-        return this.pickAnswer(key);
+    render() {
+        const resultClass = (!this.state.playedID ? "hidden " : (this.guessedRight(this.state.playedID) ? "success " : "fail"));
+        const message = (!this.state.playedID) ? "" : (this.guessedRight(this.state.playedID)) ? this.pickAnswer('win') : this.pickAnswer('lose');
+        return (
+            <div className="saucer-container">
+                <h1>Pick a saucer, win a trip!</h1>
+                <DynamicList itemRenderer={this.renderSaucer} items={this.state.saucers} onClick={this.onSaucerClick} />
+                <Message className={resultClass} message={message} />
+            </div>
+        );
     }
 
     renderSaucer(item, onClick) {
@@ -59,7 +64,7 @@ export default class App extends Component {
         ];
         saucers = this.setRandom(saucers);
         saucers.forEach((value, index) => {
-            value.message = this.showAnswer(value.win ? 'win' : 'lose');
+            value.message = this.pickAnswer(value.win ? 'win' : 'lose');
         });
         return saucers;
     }
@@ -85,20 +90,16 @@ export default class App extends Component {
     }
 
     shuffle() {
-        let options = this.deepClone(this.state.saucers.slice());
+        let options = this.state.saucers.slice();
         options = this.shuffleSaucers(this.setRandom(options));
         options.forEach((value, index) => {
            value.opened = false;
-           value.message = this.showAnswer(value.win ? "win" : "lose");
+           value.message = this.pickAnswer(value.win ? "win" : "lose");
         });
         this.setState({
             saucers: options,
             playedID: null
         });
-    }
-
-    deepClone(input) {
-        return JSON.parse(JSON.stringify(input));
     }
 
     shuffleSaucers(a) {
@@ -111,7 +112,7 @@ export default class App extends Component {
 
     onSaucerClick(id) {
         if (!this.state.playedID) {
-            let options = this.deepClone(this.state.saucers.slice());
+            let options = this.state.saucers.slice();
             options.forEach((item) => {
                 if (item.id === id) {
                     item.opened = true;
@@ -122,30 +123,18 @@ export default class App extends Component {
                 playedID: id
             });
         } else {
-            this.shuffleButton.prompt();
+            this.shuffleHard();
         }
     }
 
-    guessedRight(playedID) {
-        return this.state.saucers.find((value, index) => {
-            return value.id === playedID;
-        }).win;
+    pickAnswer(key) {
+        const options = this.answers[key];
+        return options[Math.floor(Math.random() * options.length)];
     }
 
-    render() {
-        const resultClass = (!this.state.playedID ? "hidden " : (this.guessedRight(this.state.playedID) ? "success " : "fail"));
-        const message = (!this.state.playedID) ? "" : (this.guessedRight(this.state.playedID)) ? this.showAnswer('win') : this.showAnswer('lose');
-        return (
-            <div className="saucer-container">
-                <h1>Pick a saucer, win a trip!</h1>
-                <DynamicList itemRenderer={this.renderSaucer} items={this.state.saucers} onClick={this.onSaucerClick} ref={(list) => {
-                    this.saucerList = list
-                }}/>
-                <Message className={resultClass} message={message} />
-                <Button class="btn-circle" text="Engage shuffle!" onClick={this.shuffleHard} ref={(button) => {
-                    this.shuffleButton = button;
-                }}/>
-            </div>
-        );
+    guessedRight(playedID) {
+        return this.state.saucers.find((value) => {
+            return value.id === playedID;
+        }).win;
     }
 };
