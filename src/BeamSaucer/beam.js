@@ -26,7 +26,7 @@ export default class Beam extends Component {
         const triangleHeight = Math.abs(this.props.progress * this.step);
         const triangleWidth = triangleHeight / 5;
         return (
-            <BeamRay triangleHeight={triangleHeight} triangleWidth={triangleWidth} className="blah" innerRef={comp => this.beamRay = comp}/>
+            <BeamRay className="beam"triangleHeight={triangleHeight} triangleWidth={triangleWidth} className="blah" innerRef={comp => this.beamRay = comp}/>
         );
     }
 

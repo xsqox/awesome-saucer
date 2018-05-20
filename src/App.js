@@ -24,11 +24,12 @@ export default class App extends Component {
             ],
             playedID: null,
             winID: this.setRandom(3),
-            progress: 0
+            progress: 0,
+            movesToComplete: 0
         };
         this.answers = {
-            win: ['Maybe you\'ll even get to pilot', 'You won (a trip)!', 'Kiss the Earth goodbye', 'Be my Valentine!', 'Will you marry me?', 'Warp One Engage!', 'Beam you up!', 'Come with me, into the ship', 'You found serenity!', 'Universe is yours', 'Fly over, fly over!', 'Permission to come on board soon!', 'Up we go!', 'Now you one of us', 'Departing soon...', 'Prepare to take off', 'Zero gravity is fun!', 'How it feels to be chosen?', 'You are the only one'],
-            lose: ['Nope', 'Loser!', 'No space trips for ya', 'Keep trying', 'Dismissed', 'Just walk away, friend, just walk away...', 'You are pathetic', 'No luck, buddy', 'Don\'t ever play roulette', 'This is embarrassing', 'Lol', 'Crawling is your thing', 'You poor worm...', 'You are the worst', 'Haha!', 'Earthworm', 'Just one more time', 'Just go...', 'Are you done already?', 'You not gonna make it', 'Access denied', 'We don\'t need you', 'Boring', 'Lam\'oh']
+            win: ['Maybe you\'ll even get to pilot', 'You won (a trip)!', 'Kiss the Earth goodbye', 'Be my Valentine!', 'Will you marry me?', 'Warp One Engage!', 'Beam you up!', 'Come with me, into the ship', 'You found serenity!', 'Universe can be yours', 'Fly over, fly over!', 'Permission to come on board soon!', 'Up we go!', 'Now you one of us', 'Departing soon...', 'Prepare to take off', 'Zero gravity is fun!', 'How it feels to be chosen?', 'You are the only one'],
+            lose: ['Nope','Nobody cares', 'Loser!', 'You were doing so well', 'Oopsy Daisy', 'No space trips for ya', 'Keep trying', 'Dismissed', 'Just walk away, friend, just walk away...', 'You are pathetic', 'No luck, buddy', 'Don\'t ever play roulette', 'This is embarrassing', 'Lol', 'Crawling is your thing', 'You poor worm...', 'You are the worst', 'Haha!', 'Earthworm', 'Just one more time', 'Just go...', 'Are you done already?', 'You not gonna make it', 'Access denied', 'We don\'t need you', 'Boring', 'Lam\'oh']
         };
         this.onSaucerClick = this.onSaucerClick.bind(this);
         this.renderSaucer = this.renderSaucer.bind(this);
