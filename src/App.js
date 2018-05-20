@@ -43,6 +43,7 @@ export default class App extends Component {
         return (
             <div className="saucer-container">
                 <h1>Pick a saucer, win a trip!</h1>
+                <SaucerShip scale="1.7" background="lime" onClick={null}/>
                 <DynamicList itemRenderer={this.renderSaucer} items={this.state.saucers} onClick={this.onSaucerClick} />
                 <Message className={resultClass} message={message} />
             </div>

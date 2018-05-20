@@ -24,4 +24,15 @@
     }
 }
 
+@keyframes move {
+    from {
+        margin-right: 0;
+        margin-left: 0;
+    }
+    to {
+        margin-right: 80%;
+        margin-left: 0;
+    }
+}
+
 
