@@ -7,6 +7,10 @@ const Saucer = styled.div`
     margin: 45px auto 0;
     width: 170px;
     height: 80px;
+    
+    &:hover {
+        cursor: pointer;
+    }
 `;
 
 const SaucerHead = styled.div`
