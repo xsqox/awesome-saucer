@@ -31,7 +31,7 @@ export default class Message extends Component {
   render() {
     const { className, message } = this.props;
     return (
-      <TextSpan className={className}>
+      <TextSpan className={message ? className : 'hidden'}>
         {message}
       </TextSpan>
     );

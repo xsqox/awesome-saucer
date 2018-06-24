@@ -73,14 +73,16 @@ export default class App extends Component {
 
   render() {
     let message;
+    let resultClass;
     const {
       saucers, playedID, winID, progress, attempts,
     } = this.state;
-    const resultClass = (!playedID ? 'hidden ' : (this.guessedRight(playedID, winID) ? 'success ' : 'fail'));
+
     if (!playedID) {
       message = '';
     } else {
       message = (this.guessedRight(playedID, winID)) ? this.pickAnswer('win') : this.pickAnswer('lose');
+      resultClass = (this.guessedRight(playedID, winID)) ? 'success' : 'fail';
     }
     return (
       <div className="game-container">
@@ -112,20 +114,21 @@ export default class App extends Component {
     }
   }
 
-  shuffleSaucers(a) {
-    for (let i = a.length - 1; i > 0; i--) {
+  shuffleSaucers(saucers) {
+    const shuffledSaucers = saucers;
+    for (let i = shuffledSaucers.length - 1; i > 0; i -= 1) {
       const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
+      [shuffledSaucers[i], shuffledSaucers[j]] = [shuffledSaucers[j], shuffledSaucers[i]];
     }
-    return a;
+    return shuffledSaucers;
   }
 
   updateProgress(played, win) {
-    // if (this.guessedRight(played, win)) {
-    //   return this.state.progress < 3 ? this.state.progress + 1 : this.state.progress;
-    // }
-    // return this.state.progress > 0 ? this.state.progress - 1 : this.state.progress;
-      return 4;
+    const { progress } = this.state;
+    if (this.guessedRight(played, win)) {
+      return progress < 4 ? progress + 1 : progress;
+    }
+    return progress > 0 ? progress - 1 : progress;
   }
 
   pickAnswer(key) {
@@ -134,7 +137,8 @@ export default class App extends Component {
   }
 
   guessedRight(playedID, winID) {
-    const played = this.state.saucers.find(saucer => saucer.id === playedID);
-    return this.state.saucers.indexOf(played) === winID;
+    const { saucers } = this.state;
+    const played = saucers.find(saucer => saucer.id === playedID);
+    return saucers.indexOf(played) === winID;
   }
 }
