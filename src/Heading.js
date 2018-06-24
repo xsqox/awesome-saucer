@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 const Header = styled.h1`
     padding: 5px;
+    margin: 5px 0;
 `;
 
 

@@ -11,6 +11,7 @@ export default class App extends Component {
   constructor() {
     super();
     this.state = {
+      step: 3,
       saucers: [
         {
           id: 1,
@@ -90,7 +91,7 @@ export default class App extends Component {
   updateProgress(played, win) {
     const { progress } = this.state;
     if (this.guessedRight(played, win)) {
-      return progress < 4 ? progress + 1 : progress;
+      return progress < 3 ? progress + 1 : progress;
     }
     return progress > 0 ? progress - 1 : progress;
   }
@@ -114,7 +115,7 @@ export default class App extends Component {
     let message;
     let resultClass;
     const {
-      saucers, playedID, winID, progress, attempts,
+      saucers, playedID, winID, progress, attempts, step,
     } = this.state;
 
     if (!playedID) {
@@ -127,7 +128,7 @@ export default class App extends Component {
       <div className="game-container">
         <SquareBox className="counter" borderType="double" color="#fff" size={45} content={attempts} />
         <Heading heading="Pick a saucer, win a trip!" />
-        <BeamSaucer scale={1.7} background="magenta" progress={progress} />
+        <BeamSaucer scale={1.7} background="magenta" progress={progress} step={step} />
         <DynamicList
           itemRenderer={this.renderSaucer}
           items={saucers}

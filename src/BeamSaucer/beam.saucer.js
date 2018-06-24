@@ -12,11 +12,13 @@ const BeamSaucerContainer = styled.div`
 
 export default class BeamSaucer extends Component {
   render() {
-    const { scale, background, progress } = this.props;
+    const {
+      scale, background, progress, step,
+    } = this.props;
     return (
       <BeamSaucerContainer className="beam-saucer-container">
         <SaucerShip scale={scale} background={background} />
-        <Beam progress={progress} />
+        <Beam progress={progress} step={step} />
       </BeamSaucerContainer>
     );
   }
@@ -26,4 +28,5 @@ BeamSaucer.propTypes = {
   background: PropTypes.string.isRequired,
   scale: PropTypes.number.isRequired,
   progress: PropTypes.number.isRequired,
+  step: PropTypes.number.isRequired,
 };

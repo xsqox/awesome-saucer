@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const TextSpan = styled.p`
-    height: 70px;
+    height: 60px;
     display: inline-block;
     margin: 0 auto;
-    padding: 10px 20px;
+    padding: 10px;
     transition: all 0.2s ease-in;
     font-size: 20px;
     text-align: center;
