@@ -4,6 +4,7 @@ import SquareBox from './SquareBox/SquareBox';
 import SaucerShip from './Saucer/saucer';
 import BeamSaucer from './BeamSaucer/beam.saucer';
 import Message from './Message/message';
+import Heading from './Heading';
 import './App.css';
 
 export default class App extends Component {
@@ -44,63 +45,6 @@ export default class App extends Component {
     this.shuffleHard();
   }
 
-
-  setRandom(length) {
-    return Math.floor(Math.random() * length);
-  }
-
-
-  shuffle() {
-    let options = this.state.saucers.slice();
-    options = this.shuffleSaucers(options);
-    this.setState({
-      saucers: options,
-      playedID: null,
-      winID: this.setRandom(options.length),
-    });
-  }
-
-
-  shuffleHard() {
-    for (let i = 0; i < 99; i++) {
-      setTimeout(() => this.shuffle(), 500);
-    }
-  }
-
-  renderSaucer(item, onClick) {
-    return <SaucerShip saucer={item} onClick={onClick} />;
-  }
-
-  render() {
-    let message;
-    let resultClass;
-    const {
-      saucers, playedID, winID, progress, attempts,
-    } = this.state;
-
-    if (!playedID) {
-      message = '';
-    } else {
-      message = (this.guessedRight(playedID, winID)) ? this.pickAnswer('win') : this.pickAnswer('lose');
-      resultClass = (this.guessedRight(playedID, winID)) ? 'success' : 'fail';
-    }
-    return (
-      <div className="game-container">
-        <SquareBox className="counter" borderType="double" color="#fff" size={40} content={attempts} />
-        <h1>
-                    Pick a saucer, win a trip!
-        </h1>
-        <BeamSaucer scale={1.7} background="magenta" progress={progress} />
-        <DynamicList
-          itemRenderer={this.renderSaucer}
-          items={saucers}
-          onClick={this.onSaucerClick}
-        />
-        <Message className={resultClass} message={message} />
-      </div>
-    );
-  }
-
   onSaucerClick(id) {
     const { playedID, attempts, winID } = this.state;
     if (!playedID) {
@@ -112,6 +56,26 @@ export default class App extends Component {
     } else {
       this.shuffleHard();
     }
+  }
+
+  setRandom(length) {
+    return Math.floor(Math.random() * length);
+  }
+
+  shuffleHard() {
+    for (let i = 0; i < 99; i++) {
+      setTimeout(() => this.shuffle(), 500);
+    }
+  }
+
+  shuffle() {
+    let { saucers } = this.state;
+    saucers = this.shuffleSaucers(saucers);
+    this.setState({
+      saucers,
+      playedID: null,
+      winID: this.setRandom(saucers.length),
+    });
   }
 
   shuffleSaucers(saucers) {
@@ -140,5 +104,37 @@ export default class App extends Component {
     const { saucers } = this.state;
     const played = saucers.find(saucer => saucer.id === playedID);
     return saucers.indexOf(played) === winID;
+  }
+
+  renderSaucer(item, onClick) {
+    return <SaucerShip saucer={item} onClick={onClick} />;
+  }
+
+  render() {
+    let message;
+    let resultClass;
+    const {
+      saucers, playedID, winID, progress, attempts,
+    } = this.state;
+
+    if (!playedID) {
+      message = '';
+    } else {
+      message = (this.guessedRight(playedID, winID)) ? this.pickAnswer('win') : this.pickAnswer('lose');
+      resultClass = (this.guessedRight(playedID, winID)) ? 'success' : 'fail';
+    }
+    return (
+      <div className="game-container">
+        <SquareBox className="counter" borderType="double" color="#fff" size={45} content={attempts} />
+        <Heading heading="Pick a saucer, win a trip!" />
+        <BeamSaucer scale={1.7} background="magenta" progress={progress} />
+        <DynamicList
+          itemRenderer={this.renderSaucer}
+          items={saucers}
+          onClick={this.onSaucerClick}
+        />
+        <Message className={resultClass} message={message} />
+      </div>
+    );
   }
 }
