@@ -1,0 +1,7 @@
+@keyframes festive_text {
+    0% {color: #ff1a75;}
+    25% {color: darkcyan;}
+    50% {color: green;}
+    75% {color: purple;}
+    100% {color: #8c1aff;}
+}

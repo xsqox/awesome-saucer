@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import './message.css';
 
 const TextSpan = styled.p`
-    height: 60px;
+    height: 70px;
     display: inline-block;
     margin: 0 auto;
-    padding: 10px;
+    padding: 0 5px;
+    margin: 20px 0;
     transition: all 0.2s ease-in;
-    font-size: 20px;
+    font-size: 25px;
     text-align: center;
     text-transform: uppercase;
-    opacity: 1;
-    
+    opacity: 1;    
     &.hidden {
         visibility: hidden;
         opacity: 0;
@@ -24,6 +25,14 @@ const TextSpan = styled.p`
     
     &.success {
         color: goldenrod;
+    }
+    
+    &.victory {
+        color: goldenrod;
+        font-weight: bold;
+        font-size: 30px;
+        transition: all 1s ease-out;
+        animation: festive_text 2s ease-out infinite;
     }
 `;
 

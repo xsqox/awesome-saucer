@@ -9,11 +9,13 @@ const List = styled.ul`
     padding: 0;
     height: 150px;
     z-index: 100;
+    display: flex;
+    justify-content: space-around;
 `;
 
 const ListItem = styled.li`
     display: inline-block;
-    margin: 5px 25px;
+    margin: 5px 15px;
 `;
 
 

@@ -11,7 +11,7 @@ const Saucer = styled.div.attrs({
     margin: 45px auto 0;
     width: 170px;
     height: 80px;
-    
+   
     &:hover {
         cursor: pointer;
     }

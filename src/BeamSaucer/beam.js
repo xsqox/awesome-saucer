@@ -28,26 +28,29 @@ export default class Beam extends Component {
   }
 
   componentDidMount() {
-    const { maxBeamHeight, fillArea } = this.getInitialBeamSetup();
+    const { maxBeamHeight, maxBeamWidth, fillArea } = this.getInitialBeamSetup();
     this.setState({
-      maxBeamHeight, fillArea,
+      maxBeamHeight, maxBeamWidth, fillArea,
     });
   }
 
   getInitialBeamSetup() {
-    const { step } = this.props;
+    const { steps } = this.props;
     const totalHeight = document.body.scrollHeight;
+    const totalWidth = document.body.scrollWidth;
     const beamBox = this.beamRef.getBoundingClientRect();
     const maxBeamHeight = (totalHeight > window.outerHeight) ? totalHeight - beamBox.y - window.scrollY : totalHeight - beamBox.y;
-    const fillArea = maxBeamHeight / step;
-    return { maxBeamHeight, fillArea };
+    const maxBeamWidth = (totalWidth > window.outerWidth) ? totalWidth - beamBox.x - window.scrollX : totalWidth - beamBox.x;
+    const fillArea = maxBeamHeight / steps;
+    return { maxBeamHeight, maxBeamWidth, fillArea };
   }
 
   render() {
-    const { progress, step } = this.props;
-    const { maxBeamHeight, fillArea } = this.state;
-    const beamHeight = (progress === step) ? maxBeamHeight : Math.abs(progress * fillArea);
-    const beamWidth = beamHeight / (step - 1);
+    const { progress, steps } = this.props;
+    const { maxBeamHeight, maxBeamWidth, fillArea } = this.state;
+    const beamHeight = (progress === steps) ? maxBeamHeight : Math.abs(progress * fillArea);
+    let beamWidth = beamHeight / (steps - 1);
+    beamWidth = beamWidth > maxBeamWidth ? maxBeamWidth : beamWidth;
     return (
       <BeamRay className="beam" triangleHeight={beamHeight} triangleWidth={beamWidth} innerRef={elt => this.beamRef = elt} />
     );
@@ -56,5 +59,5 @@ export default class Beam extends Component {
 
 Beam.propTypes = {
   progress: PropTypes.number.isRequired,
-  step: PropTypes.number.isRequired,
+  steps: PropTypes.number.isRequired,
 };
