@@ -25,7 +25,7 @@ body {
     text-align: center;
     height: 100%;
     display: flex;
-    padding: 5px;
+    padding: 45px 5px 0 5px;
     z-index: 110;
     flex-direction: column;
     justify-content: flex-start;
@@ -38,8 +38,13 @@ body {
 
 .counter {
     position: fixed;
-    bottom: 0;
+    top: 0;
     right: 0;
     z-index: 110;
 }
 
+.message {
+    margin: auto 0 0 0;
+    align-self: center;
+    vertical-align: text-bottom;
+}

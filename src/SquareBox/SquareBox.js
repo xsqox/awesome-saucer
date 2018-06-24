@@ -5,6 +5,7 @@ import styled from 'styled-components';
 const Box = styled.div`
     width: ${props => props.size}px;
     height: ${props => props.size}px;
+    font-size: 25px;
     border: 5px ${props => props.borderType} ${props => props.color};
     color: ${props => props.color};
     display: flex;

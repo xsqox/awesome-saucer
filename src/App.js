@@ -15,14 +15,10 @@ export default class App extends Component {
       saucers: [
         {
           id: 1,
-          opened: false,
         }, {
           id: 2,
-          opened: false,
         }, {
-
           id: 3,
-          opened: false,
         },
       ],
       activeRound: false,
@@ -31,8 +27,8 @@ export default class App extends Component {
       winID: this.setRandom(3),
     };
     this.answers = {
-      win: ['Maybe you\'ll even get to pilot', 'We have black hole roller coasters', 'That\'s gonna be hell of a ride!', 'Sky is no limit', 'Be my Valentine!', 'Will you marry me?', 'Warp One Engage!', 'Come with me, into the ship', 'Universe can be yours', 'Fly over, fly over!', 'Permission to come on board soon!', 'Up we go!', 'Departing soon', 'Prepare to take off', 'Zero gravity is fun!', 'You might be the only one'],
-      lose: ['Nope', 'Nobody cares', 'Abort mission', 'Left behind haha', 'No space trips for ya', 'Loser!', 'You were doing so well', 'Oopsy Daisy', 'Keep trying', 'Dismissed!', 'Kinda dissapointing', 'Never give up!', 'Are you always like that?', 'Just walk away, friend, just walk away...', 'You just don\'t wanna go?', 'You are pathetic', 'No luck, buddy', 'Don\'t ever play roulette', 'This is embarrassing', 'Lol', 'Crawling is your thing', 'You poor worm...', 'You are the worst', 'Haha!', 'Earthworm', 'Just one more time', 'Just go...', 'Are you done already?', 'You not gonna make it', 'Access denied', 'We don\'t need you', 'Lam\'oh'],
+      win: ['Maybe you\'ll even get to pilot', 'We have black hole roller coasters', 'That\'s gonna be hell of a ride!', 'Ever been on Super Nova?', 'Sky is no limit', 'Be my Valentine!', 'Will you marry me?', 'Warp One Engage!', 'Come with me, into the ship', 'Universe can be yours', 'Fly over, fly over!', 'Permission to come on board soon!', 'Up we go!', 'Departing soon', 'Prepare to take off', 'Zero gravity is fun!', 'You might be the only one'],
+      lose: ['Nope', 'Nobody cares', 'Abort mission', 'Oh oh, again!', 'Yep it happened again', 'Left behind haha', 'What\'s taking you so long?', 'No space trips for ya', 'Loser!', 'You were doing so well', 'Oopsy Daisy', 'Keep trying', 'Dismissed!', 'Kinda dissapointing', 'Never give up!', 'Are you always like that?', 'Just walk away, friend, just walk away...', 'You just don\'t wanna go?', 'You are pathetic', 'No luck, buddy', 'Don\'t ever play roulette', 'This is embarrassing', 'Lol', 'Crawling is your thing', 'You poor worm...', 'You are the worst', 'Haha!', 'Earthworm', 'Just one more time', 'Just go...', 'Are you done already?', 'You not gonna make it', 'Access denied', 'We don\'t need you', 'Lam\'oh'],
       victory: ['You won (a trip)!', 'Kiss the Earth goodbye', 'Beaming you up!', 'You found serenity!', 'Now you one of us', 'How it feels to be chosen?'],
     };
     this.onSaucerClick = this.onSaucerClick.bind(this);
@@ -89,10 +85,12 @@ export default class App extends Component {
 
   updateProgress(played, win) {
     const { progress, steps } = this.state;
-    if (this.guessedRight(played, win)) {
-      return progress < steps ? progress + 1 : progress;
-    }
-    return progress > 0 ? progress - 1 : progress;
+    // if (this.guessedRight(played, win)) {
+    //   return progress < steps ? progress + 1 : progress;
+    // }
+    // return progress > 0 ? progress - 1 : progress;
+    let actual = progress;
+    return actual += 1;
   }
 
   pickAnswer(key) {
@@ -139,14 +137,14 @@ export default class App extends Component {
 
     return (
       <div className="game-container">
-        <Message className={resultClass} message={message} />
+        <SquareBox className="counter" borderType="double" color="#fff" size={60} content={attempts} />
         <BeamSaucer scale={1.7} background="magenta" progress={progress} steps={steps} />
         <DynamicList
           itemRenderer={this.renderSaucer}
           items={saucers}
           onClick={this.onSaucerClick}
         />
-        <SquareBox className="counter" borderType="double" color="#fff" size={45} content={attempts} />
+        <Message className={resultClass} message={message} />
       </div>
     );
   }
