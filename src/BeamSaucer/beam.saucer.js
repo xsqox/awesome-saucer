@@ -1,21 +1,29 @@
-import React from 'react';
-import Saucer from '../Saucer/saucer';
-import Beam from './beam';
+import React, { Component } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import SaucerShip from '../Saucer/saucer';
+import Beam from './beam';
 
 const BeamSaucerContainer = styled.div`
      position: relative;
+     z-index: 10;
 `;
 
 
-export default class BeamSaucer extends Saucer {
+export default class BeamSaucer extends Component {
+  render() {
+    const { scale, background, progress } = this.props;
+    return (
+      <BeamSaucerContainer className="beam-saucer-container">
+        <SaucerShip scale={scale} background={background} />
+        <Beam progress={progress} />
+      </BeamSaucerContainer>
+    );
+  }
+}
 
-    render() {
-        return(
-            <BeamSaucerContainer>
-                <Saucer scale={this.props.scale} background={this.props.background}/>
-                <Beam progress={this.props.progress}/>
-            </BeamSaucerContainer>
-        )
-    }
+BeamSaucer.propTypes = {
+  background: PropTypes.string.isRequired,
+  scale: PropTypes.number.isRequired,
+  progress: PropTypes.number.isRequired,
 };

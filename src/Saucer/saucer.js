@@ -1,9 +1,10 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import './saucer.css';
 
 const Saucer = styled.div.attrs({
-    scale: props => props.scale || 1
+  scale: props => props.scale || 1,
 })`
     transform: scale(${props => props.scale});
     position: relative;
@@ -17,7 +18,8 @@ const Saucer = styled.div.attrs({
 `;
 
 const SaucerBody = styled.div.attrs({
-    background: props => props.background || 'deepskyblue'
+  // eslint-disable-next-line
+    background: props => props.background || 'deepskyblue',
 })`
     width: 160px;
     height: 50px;
@@ -25,8 +27,9 @@ const SaucerBody = styled.div.attrs({
     right: 0;
     margin: auto;
     border-radius: 80px / 30px;
-    background: ${props => props.background};
+    background: ${props => props.background || 'deepskyblue'};
     position: absolute;
+    z-index: 10;
     
     &:after {
         content: '';
@@ -133,19 +136,37 @@ const SaucerWindow = styled.span`
 `;
 
 export default class SaucerShip extends Component {
-    render() {
-        return <div onClick={() => this.props.saucer ? this.props.onClick(this.props.saucer.id) : null}>
-            <Saucer scale={this.props.scale}>
-                <SaucerHead/>
-                <SaucerBody background={this.props.background}/>
-                <SaucerWindows>
-                    <SaucerWindow/>
-                    <SaucerWindow/>
-                    <SaucerWindow/>
-                    <SaucerWindow/>
-                    <SaucerWindow/>
-                </SaucerWindows>
-            </Saucer>
-        </div>
-    }
+  render() {
+    const {
+      background, scale, saucer, onClick,
+    } = this.props;
+    return (
+      <Saucer scale={scale} onClick={() => (saucer ? onClick(saucer.id) : null)}>
+        <SaucerHead className="saucer-head" />
+        <SaucerBody className="saucer-body" background={background} />
+        <SaucerWindows>
+          <SaucerWindow />
+          <SaucerWindow />
+          <SaucerWindow />
+          <SaucerWindow />
+          <SaucerWindow />
+        </SaucerWindows>
+      </Saucer>
+    );
+  }
 }
+
+SaucerShip.propTypes = {
+  background: PropTypes.string,
+  scale: PropTypes.number,
+  // eslint-disable-next-line
+  saucer: PropTypes.object,
+  onClick: PropTypes.func,
+};
+
+SaucerShip.defaultProps = {
+  onClick: null,
+  saucer: null,
+  scale: 1,
+  background: 'deepskyblue',
+};

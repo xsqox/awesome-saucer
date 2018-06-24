@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, { Component } from 'react';
 import FlipMove from 'react-flip-move';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -8,6 +8,7 @@ const List = styled.ul`
     margin: 0;
     padding: 0;
     height: 150px;
+    z-index: 100;
 `;
 
 const ListItem = styled.li`
@@ -17,27 +18,29 @@ const ListItem = styled.li`
 
 
 export default class DynamicList extends Component {
+  generateItem(item) {
+    const { itemRenderer, onClick } = this.props;
+    return (
+      <ListItem key={item.id}>
+        {itemRenderer(item, onClick)}
+      </ListItem>);
+  }
 
-    generateItem(item, index) {
-        return (
-            <ListItem key={item.id}>
-                {this.props.itemRenderer(item, this.props.onClick)}
-            </ListItem>)
-    }
-
-    render() {
-        return (<List>
-            <FlipMove duration={150} easing="ease-out">
-                {this.props.items.map((item, index) => {
-                    return this.generateItem(item, index)
-                })}
-            </FlipMove>
-        </List>)
-    }
+  render() {
+    const { items } = this.props;
+    return (
+      <List>
+        <FlipMove duration={150} easing="ease-out">
+          {items.map((item, index) => this.generateItem(item, index))}
+        </FlipMove>
+      </List>
+    );
+  }
 }
 
 DynamicList.propTypes = {
-    items: PropTypes.array,
-    itemRenderer: PropTypes.func.isRequired
+  items: PropTypes.arrayOf(PropTypes.shape),
+  itemRenderer: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 DynamicList.defaultProps = { items: [] };

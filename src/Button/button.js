@@ -1,6 +1,6 @@
-import React, {Component} from "react";
+import React, { Component } from 'react';
 import styled from 'styled-components';
-import './button.css';
+import PropTypes from 'prop-types';
 
 const Btn = styled.button`
     outline: none;
@@ -24,25 +24,23 @@ const Btn = styled.button`
 `;
 
 export default class Button extends Component {
-    render() {
-        return (
-            <div ref={(button) => {
-                this.button = button
-            }} onClick={this.props.onClick}>
-                <Btn className={this.props.class}>{this.props.text}</Btn>
-            </div>
-        )
-    }
-
-    prompt() {
-        this.button.classList.add('prompting');
-        setTimeout(() => {
-            this.button.classList.remove('prompting')
-        }, 2000);
-    }
+  render() {
+    const { onClick, className, text } = this.props;
+    return (
+      <Btn className={className} onClick={onClick}>
+        {text}
+      </Btn>
+    );
+  }
 }
 
+Button.propTypes = {
+  className: PropTypes.string,
+  text: PropTypes.string,
+  onClick: PropTypes.func.isRequired,
+};
+
 Button.defaultProps = {
-    class: 'btn-circle',
-    text: 'Press me'
+  className: 'btn-circle',
+  text: 'Click me',
 };

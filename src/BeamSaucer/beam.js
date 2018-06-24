@@ -1,12 +1,15 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const BeamRay = styled.div`
     width: 0;
     height: 0;
     position: absolute;
-    left: 0;
-    right: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+    top: 80%;
+    z-index: 1;
     margin: auto;
     border-style: solid;
     border-width: 0px ${props => props.triangleWidth}px ${(props => props.triangleHeight)}px ${props => props.triangleWidth}px;
@@ -15,24 +18,27 @@ const BeamRay = styled.div`
 `;
 
 export default class Beam extends Component {
+  constructor() {
+    super();
+    this.maxHeight = 0;
+    this.step = 0;
+  }
 
-    constructor() {
-        super();
-        this.maxHeight = 0;
-        this.step = 0;
-    }
+  componentDidMount() {
+    this.maxHeight = window.outerHeight - this.beamRay.getBoundingClientRect().y;
+    this.step = this.maxHeight / 3;
+  }
 
-    render() {
-        const triangleHeight = Math.abs(this.props.progress * this.step);
-        const triangleWidth = triangleHeight / 5;
-        return (
-            <BeamRay className="beam"triangleHeight={triangleHeight} triangleWidth={triangleWidth} className="blah" innerRef={comp => this.beamRay = comp}/>
-        );
-    }
+  render() {
+    const { progress } = this.props;
+    const triangleHeight = Math.abs(progress * this.step);
+    const triangleWidth = triangleHeight / 3;
+    return (
+      <BeamRay className="beam" triangleHeight={triangleHeight} triangleWidth={triangleWidth} innerRef={comp => this.beamRay = comp} />
+    );
+  }
+}
 
-    componentDidMount() {
-        this.maxHeight = window.outerHeight - this.beamRay.getBoundingClientRect().y;
-        this.step = this.maxHeight / 5;
-    }
+Beam.propTypes = {
+  progress: PropTypes.number.isRequired,
 };
-

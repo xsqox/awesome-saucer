@@ -1,9 +1,8 @@
-import React, {Component} from "react";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import img from '../fail-alien.jpg';
 
 const TextSpan = styled.p`
-    // width: 280px;
     height: 70px;
     display: inline-block;
     margin: 0 auto;
@@ -21,8 +20,6 @@ const TextSpan = styled.p`
     
     &.fail {
          color: #ffb3b3;
-    //   background: url(${img}) no-repeat bottom center;
-    //   background-size: 35%;
     }
     
     &.success {
@@ -31,12 +28,22 @@ const TextSpan = styled.p`
 `;
 
 export default class Message extends Component {
+  render() {
+    const { className, message } = this.props;
+    return (
+      <TextSpan className={className}>
+        {message}
+      </TextSpan>
+    );
+  }
+}
 
-    render() {
-        return (
-            <TextSpan className={this.props.className}>{this.props.message}</TextSpan>
-        );
-    }
+Message.propTypes = {
+  className: PropTypes.string,
+  message: PropTypes.string,
 };
 
-
+Message.defaultProps = {
+  className: '',
+  message: '',
+};
