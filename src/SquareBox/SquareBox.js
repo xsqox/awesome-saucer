@@ -20,11 +20,17 @@ const BoxContent = styled.span`
 
 class SquareBox extends Component {
   render() {
+    let handler = null;
+    let { content } = this.props;
     const {
-      content, size, borderType, color, className,
+      size, borderType, color, className, reset, onClick,
     } = this.props;
+    if (reset) {
+      handler = onClick;
+      content = 'Reset';
+    }
     return (
-      <Box className={className} borderType={borderType} size={size} color={color}>
+      <Box className={className} borderType={borderType} size={size} color={color} onClick={handler}>
         <BoxContent>
           {content}
         </BoxContent>
@@ -38,6 +44,8 @@ SquareBox.propTypes = {
   size: PropTypes.number,
   color: PropTypes.string,
   className: PropTypes.string,
+  reset: PropTypes.bool,
+  onClick: PropTypes.func,
 };
 
 SquareBox.defaultProps = {
@@ -45,6 +53,8 @@ SquareBox.defaultProps = {
   size: 30,
   color: '#fff',
   className: '',
+  reset: false,
+  onClick: null,
 };
 
 export default SquareBox;

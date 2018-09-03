@@ -4,6 +4,7 @@ import SquareBox from './SquareBox/SquareBox';
 import SaucerShip from './Saucer/saucer';
 import BeamSaucer from './BeamSaucer/beam.saucer';
 import Message from './Message/message';
+import Data from './strings/strings.json';
 import './App.css';
 
 export default class App extends Component {
@@ -22,39 +23,55 @@ export default class App extends Component {
         },
       ],
       activeRound: false,
-      attempts: 0,
+      attempts: 9,
       playedID: null,
-      winID: this.setRandom(3),
+      winID: App.setRandom(3),
     };
-    this.answers = {
-      win: ['Maybe you\'ll even get to pilot', 'We have black hole roller coasters', 'That\'s gonna be hell of a ride!', 'Ever been on Super Nova?', 'Sky is no limit', 'Be my Valentine!', 'Will you marry me?', 'Warp One Engage!', 'Come with me, into the ship', 'Universe can be yours', 'Fly over, fly over!', 'Permission to come on board soon!', 'Up we go!', 'Departing soon', 'Prepare to take off', 'Zero gravity is fun!', 'You might be the only one'],
-      lose: ['Nope', 'Nobody cares', 'Abort mission', 'Oh oh, again!', 'Yep it happened again', 'Left behind haha', 'What\'s taking you so long?', 'No space trips for ya', 'Loser!', 'You were doing so well', 'Oopsy Daisy', 'Keep trying', 'Dismissed!', 'Kinda dissapointing', 'Never give up!', 'Are you always like that?', 'Just walk away, friend, just walk away...', 'You just don\'t wanna go?', 'You are pathetic', 'No luck, buddy', 'Don\'t ever play roulette', 'This is embarrassing', 'Lol', 'Crawling is your thing', 'You poor worm...', 'You are the worst', 'Haha!', 'Earthworm', 'Just one more time', 'Just go...', 'Are you done already?', 'You not gonna make it', 'Access denied', 'We don\'t need you', 'Lam\'oh'],
-      victory: ['You won (a trip)!', 'Kiss the Earth goodbye', 'Beaming you up!', 'You found serenity!', 'Now you one of us', 'How it feels to be chosen?'],
-    };
+    this.answers = Data.answers;
+    this.saucerRefs = [];
     this.onSaucerClick = this.onSaucerClick.bind(this);
     this.renderSaucer = this.renderSaucer.bind(this);
     this.pickAnswer = this.pickAnswer.bind(this);
+    this.resetHandler = this.resetHandler.bind(this);
+    this.handleOutsideClick = this.handleOutsideClick.bind(this);
+    this.setWrapperRef = this.setWrapperRef.bind(this);
   }
 
   componentDidMount() {
+    document.body.addEventListener('click', this.handleOutsideClick);
     this.shuffleHard();
   }
 
+  componentWillUnmount() {
+    document.body.removeEventListener('click', this.handleOutsideClick);
+  }
+
   onSaucerClick(id) {
-    const { playedID, attempts, winID } = this.state;
-    if (!playedID) {
-      this.setState({
-        attempts: attempts + 1,
-        playedID: id,
-        progress: this.updateProgress(id, winID),
-        activeRound: true,
-      });
-    } else {
-      this.shuffleHard();
+    if (id) {
+      const {
+        playedID, attempts, winID, progress, steps,
+      } = this.state;
+      if (steps !== progress) {
+        if (!playedID) {
+          this.setState({
+            attempts: attempts - 1,
+            playedID: id,
+            progress: this.updateProgress(id, winID),
+            activeRound: true,
+          });
+        } else {
+          this.shuffleHard();
+        }
+      }
     }
   }
 
-  setRandom(length) {
+  setWrapperRef(node) {
+    this.saucerRefs.push(node);
+  }
+
+
+  static setRandom(length) {
     return Math.floor(Math.random() * length);
   }
 
@@ -64,13 +81,30 @@ export default class App extends Component {
     }
   }
 
+  handleOutsideClick(event) {
+    let insider = false;
+    if (this.saucerRefs.length) {
+      this.saucerRefs.forEach((saucer) => {
+        if (saucer.contains(event.target)) {
+          insider = true;
+        }
+      });
+    }
+    if (insider) {
+      this.onSaucerClick(null);
+    } else {
+      this.shuffleHard();
+    }
+  }
+
+
   shuffle() {
     let { saucers } = this.state;
     saucers = this.shuffleSaucers(saucers);
     this.setState({
       saucers,
       playedID: null,
-      winID: this.setRandom(saucers.length),
+      winID: App.setRandom(saucers.length),
     });
   }
 
@@ -85,12 +119,10 @@ export default class App extends Component {
 
   updateProgress(played, win) {
     const { progress, steps } = this.state;
-    // if (this.guessedRight(played, win)) {
-    //   return progress < steps ? progress + 1 : progress;
-    // }
-    // return progress > 0 ? progress - 1 : progress;
-    let actual = progress;
-    return actual += 1;
+    if (this.guessedRight(played, win)) {
+      return progress < steps ? progress + 1 : progress;
+    }
+    return progress > 0 ? progress - 1 : progress;
   }
 
   pickAnswer(key) {
@@ -125,19 +157,36 @@ export default class App extends Component {
     return { message, resultClass };
   }
 
+  resetHandler() {
+    this.setState({
+      progress: 0,
+      attempts: 0,
+      playedID: null,
+    }, this.shuffleHard());
+  }
+
   renderSaucer(item, onClick) {
-    return <SaucerShip saucer={item} onClick={onClick} />;
+    return <div ref={this.setWrapperRef}><SaucerShip saucer={item} onClick={onClick} /></div>;
   }
 
   render() {
+    let showReset = false;
+    let noAttemptsLeft = false;
     const {
       saucers, progress, attempts, steps,
     } = this.state;
     const { message, resultClass } = this.generateFeedback();
+    if (progress === steps) {
+      showReset = true;
+    }
+    if (attempts === 0) {
+      showReset = true;
+      // noAttemptsLeft = true;
+    }
 
     return (
       <div className="game-container">
-        <SquareBox className="counter" borderType="double" color="#fff" size={60} content={attempts} />
+        <SquareBox className="counter" borderType="double" color="#fff" size={60} content={attempts} reset={showReset} onClick={this.resetHandler} />
         <BeamSaucer scale={1.7} background="magenta" progress={progress} steps={steps} />
         <DynamicList
           itemRenderer={this.renderSaucer}

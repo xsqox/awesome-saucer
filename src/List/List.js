@@ -53,6 +53,7 @@ export default class DynamicList extends Component {
 DynamicList.propTypes = {
   items: PropTypes.arrayOf(PropTypes.shape),
   itemRenderer: PropTypes.func.isRequired,
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
 };
-DynamicList.defaultProps = { items: [] };
+
+DynamicList.defaultProps = { items: [], onClick: null };

@@ -141,7 +141,7 @@ export default class SaucerShip extends Component {
       background, scale, saucer, onClick,
     } = this.props;
     return (
-      <Saucer scale={scale} onClick={() => (saucer ? onClick(saucer.id) : null)}>
+      <Saucer scale={scale} onClick={() => (saucer && onClick ? onClick(saucer.id) : null)}>
         <SaucerHead className="saucer-head" />
         <SaucerBody className="saucer-body" background={background} />
         <SaucerWindows>
