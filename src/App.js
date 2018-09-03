@@ -8,6 +8,13 @@ import Data from './strings/strings.json';
 import Config from './config.json';
 import './App.css';
 
+// @TODO redo in css-grid
+// @TODO add alien
+// @TODO add saucer escape if out of moves
+// @TODO add prettier
+// @TODO add Redux
+// @TODO add tests
+
 export default class App extends Component {
   constructor() {
     super();
