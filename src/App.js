@@ -95,8 +95,8 @@ export default class App extends Component {
 
   handleOutsideClick(event) {
     let insider = false;
-    const { attempts } = this.state;
-    if (attempts) {
+    const { attempts, steps, progress } = this.state;
+    if (attempts && (steps !== progress)) {
       if (this.saucerRefs.length) {
         this.saucerRefs.forEach((saucer) => {
           if (saucer.contains(event.target)) {
@@ -194,16 +194,19 @@ export default class App extends Component {
     const {
       saucers, progress, attempts, steps,
     } = this.state;
+    let content = attempts;
     const { message, resultClass } = this.generateFeedback();
     if (progress === steps) {
       showReset = true;
+      content = 'Play again';
     }
     if (attempts === 0) {
       showReset = true;
+      content = 'Play again';
     }
     return (
       <div className="game-container">
-        <SquareBox className="counter" borderType="double" color="#fff" size={80} content={attempts} reset={showReset} onClick={this.resetHandler} />
+        <SquareBox className="counter" borderType="double" color="#fff" size={75} content={content} onClick={showReset ? this.resetHandler : null} />
         <BeamSaucer scale={1.7} background="magenta" progress={progress} steps={steps} />
         <DynamicList
           itemRenderer={this.renderSaucer}
