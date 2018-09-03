@@ -5,13 +5,14 @@ import SaucerShip from './Saucer/saucer';
 import BeamSaucer from './BeamSaucer/beam.saucer';
 import Message from './Message/message';
 import Data from './strings/strings.json';
+import Config from './config.json';
 import './App.css';
 
 export default class App extends Component {
   constructor() {
     super();
     this.state = {
-      steps: 3,
+      steps: Config.steps,
       progress: 0,
       saucers: [
         {
@@ -23,7 +24,7 @@ export default class App extends Component {
         },
       ],
       activeRound: false,
-      attempts: 9,
+      attempts: Config.attempts,
       playedID: null,
       winID: App.setRandom(3),
     };
@@ -48,19 +49,30 @@ export default class App extends Component {
 
   onSaucerClick(id) {
     if (id) {
-      const {
-        playedID, attempts, winID, progress, steps,
-      } = this.state;
-      if (steps !== progress) {
-        if (!playedID) {
-          this.setState({
-            attempts: attempts - 1,
-            playedID: id,
-            progress: this.updateProgress(id, winID),
-            activeRound: true,
-          });
-        } else {
-          this.shuffleHard();
+      // came from saucer, not outside
+      const { attempts } = this.state;
+      if (attempts <= 1) {
+        // last attempt just clicked
+        this.setState({
+          attempts: 0,
+          progress: 0,
+        });
+      } else {
+        const {
+          playedID, winID, progress, steps,
+        } = this.state;
+        if (steps !== progress) {
+          // still playing
+          if (!playedID) {
+            this.setState({
+              attempts: attempts - 1,
+              playedID: id,
+              progress: this.updateProgress(id, winID),
+              activeRound: true,
+            });
+          } else {
+            this.shuffleHard();
+          }
         }
       }
     }
@@ -83,17 +95,22 @@ export default class App extends Component {
 
   handleOutsideClick(event) {
     let insider = false;
-    if (this.saucerRefs.length) {
-      this.saucerRefs.forEach((saucer) => {
-        if (saucer.contains(event.target)) {
-          insider = true;
-        }
-      });
-    }
-    if (insider) {
-      this.onSaucerClick(null);
-    } else {
-      this.shuffleHard();
+    const { attempts } = this.state;
+    if (attempts) {
+      if (this.saucerRefs.length) {
+        this.saucerRefs.forEach((saucer) => {
+          if (saucer.contains(event.target)) {
+            // saucer or it's children been clicked
+            insider = true;
+          }
+        });
+      }
+      if (insider) {
+        // delegate to Saucer clicker
+        this.onSaucerClick(null);
+      } else {
+        this.shuffleHard();
+      }
     }
   }
 
@@ -140,7 +157,7 @@ export default class App extends Component {
     let message;
     let resultClass;
     const {
-      playedID, winID, progress, steps, activeRound,
+      playedID, winID, progress, steps, activeRound, attempts,
     } = this.state;
     if (!activeRound) {
       message = 'Pick a saucer, win a trip!';
@@ -149,6 +166,9 @@ export default class App extends Component {
       message = '';
     } else if (progress === steps) {
       message = this.pickAnswer('victory');
+      resultClass = 'victory';
+    } else if ((progress !== steps) && attempts === 0) {
+      message = this.pickAnswer('fail');
       resultClass = 'victory';
     } else {
       message = (this.guessedRight(playedID, winID)) ? this.pickAnswer('win') : this.pickAnswer('lose');
@@ -160,7 +180,7 @@ export default class App extends Component {
   resetHandler() {
     this.setState({
       progress: 0,
-      attempts: 0,
+      attempts: Config.attempts,
       playedID: null,
     }, this.shuffleHard());
   }
@@ -171,7 +191,6 @@ export default class App extends Component {
 
   render() {
     let showReset = false;
-    let noAttemptsLeft = false;
     const {
       saucers, progress, attempts, steps,
     } = this.state;
@@ -181,12 +200,10 @@ export default class App extends Component {
     }
     if (attempts === 0) {
       showReset = true;
-      // noAttemptsLeft = true;
     }
-
     return (
       <div className="game-container">
-        <SquareBox className="counter" borderType="double" color="#fff" size={60} content={attempts} reset={showReset} onClick={this.resetHandler} />
+        <SquareBox className="counter" borderType="double" color="#fff" size={80} content={attempts} reset={showReset} onClick={this.resetHandler} />
         <BeamSaucer scale={1.7} background="magenta" progress={progress} steps={steps} />
         <DynamicList
           itemRenderer={this.renderSaucer}
